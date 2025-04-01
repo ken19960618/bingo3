@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自己紹介ビンゴ！！</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@200;300;500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: 'Noto Sans JP', sans-serif;
+      background-color: #fff;
+      color: rgb(0, 0, 250);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+    h1 {
+      font-weight: 300;
+      font-size: 28px;
+      letter-spacing: 0.05em;
+      border-bottom: 2px solid rgb(0, 0, 250);
+      padding-bottom: 10px;
+    }
+    .wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      width: 100%;
+      max-width: 960px;
+    }
+    .theme-panel {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      border: 1px solid #ccc;
+      padding: 24px;
+    }
+    .theme-item {
+      border: 1px dashed #aaa;
+      padding: 10px;
+      font-size: 13px;
+      font-weight: 300;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .bingo-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    td {
+      width: 80px;
+      height: 80px;
+      border: 1px solid #999;
+      text-align: center;
+      vertical-align: middle;
+      position: relative;
+      background-color: #fdfdfd;
+      transition: all 0.2s ease;
+    }
+    td input {
+      width: 100%;
+      height: 100%;
+      font-size: 14px;
+      font-family: 'Noto Sans JP', sans-serif;
+      color: rgb(0, 0, 250);
+      text-align: center;
+      border: none;
+      background: transparent;
+    }
+    td.checked {
+      background-color: rgb(0, 0, 250);
+    }
+    td.checked input {
+      color: white;
+      font-weight: 500;
+    }
+    #bingoMsg {
+      font-size: 18px;
+      font-weight: 500;
+      color: rgb(0, 0, 250);
+    }
+  </style>
+</head>
+<body>
+  <h1>自己紹介ビンゴ！！</h1>
+  <div class="wrapper">
+    <div class="theme-panel">
+      <div class="theme-item">最近ハマっていること</div>
+      <div class="theme-item">好きな食べ物</div>
+      <div class="theme-item">学生時代の部活・サークル</div>
+      <div class="theme-item">行ってみたい国</div>
+      <div class="theme-item">子どもの頃の夢</div>
+      <div class="theme-item">よく使う口癖</div>
+      <div class="theme-item">地元の名物</div>
+      <div class="theme-item">最近見た映画・ドラマ</div>
+      <div class="theme-item">仕事以外で挑戦したいこと</div>
+    </div>
+    <div class="bingo-section">
+      <table id="bingoBoard"></table>
+      <div id="bingoMsg"></div>
+    </div>
+  </div>
+
+  <script>
+    const table = document.getElementById('bingoBoard');
+    const size = 3;
+
+    function isChecked(cell) {
+      return cell.classList.contains('checked');
+    }
+
+    for (let i = 0; i < size; i++) {
+      const row = document.createElement('tr');
+      for (let j = 0; j < size; j++) {
+        const cell = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.addEventListener('click', e => e.stopPropagation());
+
+        cell.addEventListener('click', () => {
+          if (input.value.trim() !== '') {
+            cell.classList.toggle('checked');
+            checkBingo();
+          }
+        });
+
+        cell.appendChild(input);
+        row.appendChild(cell);
+      }
+      table.appendChild(row);
+    }
+
+    function checkBingo() {
+      const rows = table.rows;
+      const lines = [];
+
+      for (let i = 0; i < size; i++) {
+        lines.push([rows[i].cells[0], rows[i].cells[1], rows[i].cells[2]]);
+        lines.push([rows[0].cells[i], rows[1].cells[i], rows[2].cells[i]]);
+      }
+      lines.push([rows[0].cells[0], rows[1].cells[1], rows[2].cells[2]]);
+      lines.push([rows[0].cells[2], rows[1].cells[1], rows[2].cells[0]]);
+
+      const bingo = lines.some(line => line.every(isChecked));
+      document.getElementById('bingoMsg').textContent = bingo ? '🎉 ビンゴ！' : '';
+    }
+  </script>
+</body>
+</html>
